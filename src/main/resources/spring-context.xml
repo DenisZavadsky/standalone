@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms" xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+
+       <context:component-scan base-package="com.levelup"></context:component-scan>
+
+       <amq:connectionFactory id="jmsFactory" brokerURL="tcp://localhost:61616" />
+       <!--<amq:topic id="destinationTopic" physicalName="com.skyc.jms.test.topic" />-->
+
+       <bean id="jmsConnectionFactory"
+             class="org.springframework.jms.connection.CachingConnectionFactory">
+              <property name="targetConnectionFactory" ref="jmsFactory"></property>
+       </bean>
+
+       <jms:listener-container container-type="default"
+                               connection-factory="jmsConnectionFactory"
+                               acknowledge="auto" destination-type="topic">
+              <!--<jms:listener destination="com.skyc.jms.test.topic" ref="jmsMessageTopicListener" />-->
+              <jms:listener destination="com.skyc.jms.test.topic" ref="testMessageListener" />
+              <!--<jms:listener destination="com.skyc.jms.test.topic" ref="jmsCopyTradingTopicListener" />-->
+       </jms:listener-container>
+
+</beans>
